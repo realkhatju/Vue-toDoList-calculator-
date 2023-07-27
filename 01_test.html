@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .red_color {
+        color: red;
+      }
+      .delete {
+        text-decoration: line-through;
+      }
+      img {
+        width: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      <div id="app">
+        {{ message }}
+        <h1>{{ 1+1 }}</h1>
+        <h1>{{ message.split('').join('_') }}</h1>
+        <h1>{{ status ? "this is true" : "this is just false" }}</h1>
+        //ternary operators
+        <h1>{{ status ? "this is apple" : "this is orange"}}</h1>
+        <input type="text" v-model="message" />
+        <h1 :class="[textRed,deleteMessage]">{{ message }}</h1>
+        <a :href="myURL" target="_blank">Youtube</a>
+        <img :src="mySrc" alt="" />
+        <span :title="myTitle">CL</span>
+        <input type="text" :disabled="status" />
+
+        <h1 v-if="status == true">Hello Vue Js</h1>
+        <h1 v-else="status == false">I'm Not Vue Js</h1>
+
+        <h2 v-if="fruit == 'apple'">I'm apple</h2>
+        <h2 v-else-if="fruit == 'orange'">I'm orange</h2>
+        <h2 v-else-if="fruit == 'banana'">I'm banana</h2>
+        <h2 v-else-if="fruit == 'guava'">I'm guava</h2>
+        <h2 v-else="fruit == 'strawberry'">I'm strawberry</h2>
+        <h2 v-show="status">OK</h2>
+        <button @click="clickMe()">Click Me</button>
+
+        <h2>Looping</h2>
+        <ul>
+          <li v-for="(item,index) in constants">{{index}} | {{item}}</li>
+        </ul>
+
+        <table border="1 solid black">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+            </tr>
+            <tr v-for="item in items">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.gender}}</td>
+            </tr>
+        </table>
+
+        <h1>{{ length }}</h1>
+        <h1>{{ reverse }}</h1>
+        <h1>{{ date }}</h1>
+        <button @click="inc()">Increase</button>
+        <button @click="dec()">Decrease</button>
+        <button @click="clr()">Clear</button>
+
+        <p v-if="number == 0" style="color: blue">
+          {{number}} <br />
+          It is equal to zero
+        </p>
+        <p v-else-if="number < 0" style="color: red">
+          {{number}} <br />
+          It is minus number
+        </p>
+        <p v-else="number > 0" style="color: green">
+          {{number}} <br />
+          It is plus number
+        </p>
+
+        <input type="text" v-model="myText" @keyup.enter="send()" /> {{myText}}
+        <button @click="send()">send</button>
+      </div>
+    </h1>
+    <h1>
+      <div class="app">{{ content }}</div>
+    </h1>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+  <script>
+    let app = new Vue({
+      el: "#app",
+      data: {
+        message: "helloworld!",
+        // status : false,
+        // status : false,
+        textRed: "red_color",
+        deleteMessage: "delete",
+        myURL: "https://www.youtube.com",
+        mySrc: "img/tree-736885_1280.jpg",
+        myTitle: "code lab",
+        status: true,
+        fruit: "",
+        number: 0,
+        myText: "white",
+        constants: ["one", "two", "three"],
+        items : [{'id': 0, 'name': 'kyaw kyaw', 'gender': 'male'}, {'id': 1, 'name': 'Nandar', 'gender': 'female'}, {'id': 2, 'name': 'mg mg', 'gender': 'male'}],
+      },
+      computed: {
+        length() {
+          return this.message.length;
+        },
+        reverse() {
+          // return this.message.split('').reverse().join('');
+          let newMessage = this.message.split("");
+          let reverseMessage = newMessage.reverse();
+          let response = reverseMessage.join("");
+          return response;
+        },
+        date() {
+          return Date.now();
+        },
+      },
+      methods: {
+        clickMe() {
+          console.log("status ok !");
+          alert("hello world!");
+        },
+        inc() {
+          this.number++;
+        },
+        dec() {
+          this.number--;
+        },
+        clr() {
+          this.number = 0;
+        },
+        send() {
+          console.log(this.myText);
+          this.myText = "";
+        },
+      },
+    });
+
+    let app2 = new Vue({
+      el: ".app",
+      data: {
+        content: "hello I'm content!",
+      },
+    });
+  </script>
+</html>
