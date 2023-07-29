@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Document</title>
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      rel="stylesheet"/>
+    <!-- MDB -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css"
+      rel="stylesheet"/>
+  </head>
+  <body>
+    <div id="app" class="text-center">
+      <h1>{{ message }}</h1>
+      <div class="row">
+        <div class="col-6 d-flex justify-content-center">
+          <!-- pizza name input -->
+          <div class="w-50">
+            <div class="mb-4">
+              <input
+                type="text"
+                class="form-control"
+                v-model="pizzaData.pizzaName" placeholder="Enter Pizza Name"/>
+              <small style="color: red" v-if="validation.pizzaNameStatus">Pizza name is required</small>
+            </div>
+            <!-- pizza price input -->
+            <div class="mb-4">
+              <input
+                type="number"
+                class="form-control"
+                v-model="pizzaData.pizzaPrice" placeholder="Enter Pizza Price"/>
+              <small style="color: red" v-if="validation.pizzaPriceStatus">Pizza price is required</small>
+            </div>
+            <!-- add button -->
+            <button class="btn btn-primary btn-block" @click="add()">
+              Add
+            </button>
+          </div>
+        </div>
+        <!-- table -->
+        <div class="col-6 d-flex justify-content-center">
+          <table class="table table-bordered border-primary w-50">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Pizza Name</th>
+                <th>Pizza Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in items">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.price}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Calculating -->
+      <div class="row">
+        <h1>{{ messageCalc }}</h1>
+        <div class="col-6 d-flex justify-content-center">
+            <div class="w-50 form-control"  style="border: 3px solid blue;">
+                <!-- Text input -->
+                <div class="form-outline mb-4">
+                <div type="number" class="form-control bg-dark text-white text-end">
+                    <h4>{{ answer }}</h4>
+                </div>
+
+                  </div>
+                <!-- 2 column grid layout with text inputs for the first and last names -->
+                <div class="row mb-4">
+                <div class="col">
+                    <input type="number" class="form-control" placeholder="1st number" v-model="userData.firstNumber"/>
+                </div>
+                <div class="col">
+                    <input type="number" class="form-control" placeholder="2nd number" v-model="userData.secondNumber"/>
+                </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col">
+                            <select class="btn btn-success w-100 fs-6" v-model="userData.operators">
+                                <option selected>+ - &times; &divide;</option>
+                                <option value="+">+</option>
+                                <option value="-">-</option>
+                                <option value="*">&times;</option>
+                                <option value="/">&divide;</option>
+                            </select>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-success w-100" @click="calc()">Cal</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-danger w-100" @click="clear()">Cls</button>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col">
+                        <button class="btn btn-warning w-100" @click="save()">Save</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="form">
+                    <h5 class="text-center">History</h5>
+                </div>
+                <table class="table w-100">
+                    <tbody>
+                        <tr v-for="item in histories">
+                            <div class="row">
+                                <div class="col-2 text-start">
+                                    <td>{{ item.id }}</td>
+                                </div>
+                                <div class="col-10">
+                                    <td>{{ item.answer }}</td>
+                                </div>
+                            </div>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-6"></div>
+    </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
+  <script>
+    let app = new Vue({
+      el: "#app",
+      data: {
+        message : "TodoList & Calculator",
+        messageCalc : "Calculating",
+        items: [],
+        histories : [],
+        answer : 0,
+        pizzaData: {
+          pizzaName: "",
+          pizzaPrice: "",
+        },
+        userData : {
+            firstNumber : "",
+            secondNumber : "",
+            operators : "",
+        },
+        validation: {
+          pizzaNameStatus: false,
+          pizzaPriceStatus: false,
+        },
+      },
+      methods: {
+        add() {
+          this.validation.pizzaNameStatus =
+            this.pizzaData.pizzaName == "" ? true : false;
+          this.validation.pizzaPriceStatus =
+            this.pizzaData.pizzaPrice == "" ? true : false;
+          if (
+            !this.validation.pizzaNameStatus &&
+            !this.validation.pizzaPriceStatus
+          ) {
+            this.items.push({
+              id: this.items.length + 1,
+              name: this.pizzaData.pizzaName,
+              price: this.pizzaData.pizzaPrice,
+            });
+          }
+          this.clearItems();
+        },
+        clearItems() {
+          this.pizzaData.pizzaName = "";
+          this.pizzaData.pizzaPrice = "";
+        },
+        calc(){
+            let result = this.computing();
+            this.answer = `
+                ${this.userData.firstNumber} ${this.userData.operators} ${this.userData.secondNumber} = ${result}
+            `;
+            this.clearForm();
+        },
+        computing(){
+            let fNumber = parseInt(this.userData.firstNumber);
+            let sNumber = parseInt(this.userData.secondNumber);
+            switch(this.userData.operators){
+                case '+':
+                    return fNumber + sNumber;
+                break;
+                case '-':
+                    return fNumber - sNumber;
+                break;
+                case '*':
+                    return fNumber * sNumber;
+                break;
+                case '/':
+                    return fNumber / sNumber;
+                break;
+                default:
+                    return error;
+                break;
+            }
+        },
+        clearForm(){
+            this.userData.firstNumber = '';
+            this.userData.secondNumber = '';
+            this.userData.operators = '';
+        },
+        clear(){
+            this.clearForm();
+        },
+        save(){
+            if(this.answer){
+                this.histories.push({
+                id : this.histories.length + 1,
+                answer : this.answer,
+            });
+            }
+            this.answer = 0;
+        }
+      },
+    });
+  </script>
+</html>
